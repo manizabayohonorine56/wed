@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign up — Ash & Sam</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#8b5cf6',
+            accent: '#f97316',
+            soft: '#f3e8ff'
+          },
+          fontFamily: {
+            heading: ['Playfair Display', 'serif'],
+            body: ['Inter', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body class="antialiased bg-white text-slate-800">
+  <header class="py-6">
+    <div class="max-w-4xl mx-auto px-6 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-semibold">A&S</div>
+      </a>
+      <a href="login.html" class="text-sm text-slate-700 hover:text-primary">Login</a>
+    </div>
+  </header>
+
+  <main class="max-w-md mx-auto px-6 py-16">
+    <div class="bg-white p-8 rounded-2xl shadow">
+      <h1 class="text-2xl font-heading font-bold">Create an account</h1>
+      <p class="mt-2 text-sm text-slate-600">Register to manage your RSVP and preferences.</p>
+      <form id="signupForm" class="mt-6 space-y-4">
+        <div>
+          <label class="text-sm text-slate-700">Full name</label>
+          <input name="name" required class="mt-1 w-full p-3 border rounded-md" />
+        </div>
+        <div>
+          <label class="text-sm text-slate-700">Email</label>
+          <input name="email" type="email" required class="mt-1 w-full p-3 border rounded-md" />
+        </div>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label class="text-sm text-slate-700">Password</label>
+            <input name="password" type="password" required class="mt-1 w-full p-3 border rounded-md" />
+          </div>
+          <div>
+            <label class="text-sm text-slate-700">Confirm password</label>
+            <input name="confirmPassword" type="password" required class="mt-1 w-full p-3 border rounded-md" />
+          </div>
+        </div>
+        <div>
+          <label class="text-sm text-slate-700">Phone (optional)</label>
+          <input name="phone" type="tel" placeholder="+1 555 555 5555" class="mt-1 w-full p-3 border rounded-md" />
+        </div>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label class="text-sm text-slate-700">Attending</label>
+            <select name="attending" required class="mt-1 w-full p-3 border rounded-md">
+              <option value="">Please choose</option>
+              <option value="attending">Attending</option>
+              <option value="regrets">Regrets</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-sm text-slate-700">Number of guests</label>
+            <input name="guests" type="number" min="0" value="0" class="mt-1 w-full p-3 border rounded-md" />
+          </div>
+        </div>
+        <div>
+          <button type="submit" class="w-full px-4 py-2 rounded-md bg-primary text-white">Create account</button>
+        </div>
+      </form>
+      <p class="mt-4 text-center text-sm text-slate-600">Already have an account? <a href="login.html" class="text-primary">Log in</a></p>
+    </div>
+  </main>
+
+  <footer class="text-center text-sm text-slate-600 py-8">© 2025 Ash & Sam</footer>
+
+  <script>
+    document.getElementById('signupForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const name = form.name.value.trim();
+      const email = form.email.value.trim();
+      const password = form.password.value;
+      const confirm = form.confirmPassword.value;
+  const phone = form.phone.value.trim();
+  const attending = form.attending.value;
+  const guests = parseInt(form.guests.value || '0', 10);
+
+      // Basic validation
+      if (!name || !email || !password || !confirm) {
+        alert('Please fill in name, email, and password fields.');
+        return;
+      }
+      if (password !== confirm) {
+        alert('Passwords do not match.');
+        return;
+      }
+      if (!attending) {
+        alert('Please select whether you are attending.');
+        return;
+      }
+
+      // Demo storage (replace with back-end registration)
+  const payload = { name, email, phone, attending, guests, createdAt: new Date().toISOString() };
+      const users = JSON.parse(localStorage.getItem('wed_users') || '[]');
+      users.push(payload);
+      localStorage.setItem('wed_users', JSON.stringify(users));
+
+      alert('Account created (demo). You will be redirected to login.');
+      window.location.href = 'login.html';
+    });
+  </script>
+</body>
+</html>
