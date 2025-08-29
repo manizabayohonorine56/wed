@@ -1,0 +1,31 @@
+/* Small custom tweaks to pair with Tailwind */
+:root{
+  --rounded-lg: 14px;
+}
+/* Improve form inputs appearance */
+input, textarea, select {
+  outline: none;
+}
+input:focus, textarea:focus, select:focus {
+  box-shadow: 0 0 0 4px rgba(139,92,246,0.08);
+  border-color: rgba(139,92,246,0.8);
+}
+/* Make details summary nicer */
+details summary {
+  list-style: none;
+  cursor: pointer;
+}
+details[open] summary::after {
+  content: "\2013";
+  float: right;
+}
+details summary::after {
+  content: "+";
+  float: right;
+}
+
+/* subtle container radius */
+.rounded-2xl { border-radius: 18px; }
+
+/* utility for soft shadow often used in chadcn designs */
+.shadow { box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06); }
