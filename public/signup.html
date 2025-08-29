@@ -79,6 +79,14 @@
           </div>
         </div>
         <div>
+          <label class="text-sm text-slate-700">Role</label>
+          <select name="role" class="mt-1 w-full p-3 border rounded-md">
+            <option value="guest">Guest</option>
+            <option value="vip">VIP</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+        <div>
           <button type="submit" class="w-full px-4 py-2 rounded-md bg-primary text-white">Create account</button>
         </div>
       </form>
@@ -91,7 +99,25 @@
 
   <footer class="text-center text-sm text-slate-600 py-8">© 2025 Ash & Sam</footer>
 
-  <script>
+  <script type="module">
+    // Firebase modular SDK (v9+) - replace the firebaseConfig values with your project config
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "REPLACE_ME",
+      authDomain: "REPLACE_ME",
+      projectId: "REPLACE_ME",
+      storageBucket: "REPLACE_ME",
+      messagingSenderId: "REPLACE_ME",
+      appId: "REPLACE_ME"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
     document.getElementById('signupForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const form = e.target;
@@ -99,11 +125,11 @@
       const email = form.email.value.trim();
       const password = form.password.value;
       const confirm = form.confirmPassword.value;
-  const phone = form.phone.value.trim();
-  const attending = form.attending.value;
-  const guests = parseInt(form.guests.value || '0', 10);
+      const phone = form.phone.value.trim();
+      const attending = form.attending.value;
+      const guests = parseInt(form.guests.value || '0', 10);
+      const role = form.role.value || 'guest';
 
-      // Basic validation
       if (!name || !email || !password || !confirm) {
         alert('Please fill in name, email, and password fields.');
         return;
@@ -117,14 +143,28 @@
         return;
       }
 
-      // Demo storage (replace with back-end registration)
-  const payload = { name, email, phone, attending, guests, createdAt: new Date().toISOString() };
-      const users = JSON.parse(localStorage.getItem('wed_users') || '[]');
-      users.push(payload);
-      localStorage.setItem('wed_users', JSON.stringify(users));
+      try {
+        // Create the user in Firebase Auth
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const uid = userCredential.user.uid;
 
-      alert('Account created (demo). You will be redirected to login.');
-      window.location.href = '/login.html';
+        // Store profile and role in Firestore under `users/{uid}`
+        await setDoc(doc(db, 'users', uid), {
+          name,
+          email,
+          phone,
+          attending,
+          guests,
+          role,
+          createdAt: serverTimestamp()
+        });
+
+        alert('Account created. You will be redirected to login.');
+        window.location.href = '/login.html';
+      } catch (err) {
+        console.error(err);
+        alert(err.message || 'Signup failed.');
+      }
     });
   </script>
 </body>
