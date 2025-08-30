@@ -72,7 +72,7 @@
   import { auth, db, isConfigValid } from './firebase-init.js';
   // Use the same Firebase SDK major version as firebase-init
   import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
-  import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+  import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
     if (!isConfigValid()) {
       console.warn('Firebase config not set. Paste values into /public/firebase-config.js');
@@ -92,15 +92,25 @@
   console.log('login: uid', uid);
   if (!db) throw new Error('Firestore `db` is undefined. Check firebase-init.js and SDK versions.');
 
+  // If this is the configured superadmin email, ensure their role is set
+  const SUPERADMIN_EMAIL = 'ntseth7@gmail.com';
+  if (email.toLowerCase() === SUPERADMIN_EMAIL.toLowerCase()) {
+    try {
+      await setDoc(doc(db, 'users', uid), { role: 'superadmin', email: email }, { merge: true });
+    } catch (err) { console.error('failed to set superadmin role', err); }
+  }
+
   // Fetch role/profile from Firestore
   const userDoc = await getDoc(doc(db, 'users', uid));
-        const profile = userDoc.exists() ? userDoc.data() : null;
-        const role = profile?.role || 'guest';
+  const profile = userDoc.exists() ? userDoc.data() : null;
+  const role = profile?.role || 'guest';
 
         alert(`Logged in as ${email} — role: ${role}`);
         // Redirect based on role (example)
-        if (role === 'admin') window.location.href = '/admin.html';
-        else window.location.href = '/';
+  if (role === 'superadmin') window.location.href = '/superadmin.html';
+  else if (role === 'admin') window.location.href = '/admin.html';
+  else if (role === 'vip') window.location.href = '/vip.html';
+  else window.location.href = '/';
       } catch (err) {
         console.error(err);
         alert(err.message || 'Login failed');

@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Super Admin — Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body class="bg-slate-50 text-slate-900">
+    <div class="max-w-7xl mx-auto p-6">
+      <header class="flex items-center justify-between mb-6">
+        <div>
+          <h1 class="text-3xl font-heading">Super Admin Dashboard</h1>
+          <p class="text-sm text-slate-600">Manage users, roles and site settings</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <button id="refreshBtn" class="px-3 py-2 bg-primary text-white rounded">Refresh</button>
+          <button id="exportBtn" class="px-3 py-2 border rounded">Export CSV</button>
+          <button id="signOutBtn" class="px-3 py-2 border rounded">Sign out</button>
+        </div>
+      </header>
+
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div class="p-4 bg-white rounded shadow-sm">
+          <h3 class="text-sm text-slate-500">Total users</h3>
+          <p id="totalUsers" class="text-2xl font-semibold">—</p>
+        </div>
+        <div class="p-4 bg-white rounded shadow-sm">
+          <h3 class="text-sm text-slate-500">Admins</h3>
+          <p id="totalAdmins" class="text-2xl font-semibold">—</p>
+        </div>
+        <div class="p-4 bg-white rounded shadow-sm">
+          <h3 class="text-sm text-slate-500">VIPs</h3>
+          <p id="totalVips" class="text-2xl font-semibold">—</p>
+        </div>
+      </section>
+
+      <section class="bg-white p-4 rounded shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-medium">Users</h2>
+          <input id="search" placeholder="Search by name or email" class="border rounded px-3 py-2 w-64" />
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left table-auto">
+            <thead class="text-sm text-slate-500">
+              <tr>
+                <th class="px-3 py-2">Name</th>
+                <th class="px-3 py-2">Email</th>
+                <th class="px-3 py-2">Attending</th>
+                <th class="px-3 py-2">Guests</th>
+                <th class="px-3 py-2">Role</th>
+                <th class="px-3 py-2">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="usersTbody" class="text-sm"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <script type="module">
+      import { requireRole } from './src/auth-guard.js';
+      import { auth, db } from './firebase-init.js';
+      import { signOut } from 'https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js';
+      import { collection, getDocs, query, orderBy, where, doc, setDoc } from 'https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js';
+
+      requireRole('superadmin', '/');
+
+      const usersTbody = document.getElementById('usersTbody');
+      const totalUsers = document.getElementById('totalUsers');
+      const totalAdmins = document.getElementById('totalAdmins');
+      const totalVips = document.getElementById('totalVips');
+      const searchEl = document.getElementById('search');
+
+      async function loadUsers() {
+        usersTbody.innerHTML = '<tr><td colspan="6" class="px-3 py-4 text-center text-slate-500">Loading...</td></tr>';
+        try {
+          const q = query(collection(db, 'users'), orderBy('createdAt', 'desc'));
+          const snap = await getDocs(q);
+          const users = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+          renderUsers(users);
+        } catch (err) {
+          console.error('loadUsers error', err);
+          usersTbody.innerHTML = '<tr><td colspan="6" class="px-3 py-4 text-center text-red-500">Failed to load users</td></tr>';
+        }
+      }
+
+      function renderUsers(users) {
+        const filter = (searchEl.value || '').toLowerCase();
+        const shown = users.filter(u => {
+          if (!filter) return true;
+          return (u.name || '').toLowerCase().includes(filter) || (u.email || '').toLowerCase().includes(filter);
+        });
+
+        totalUsers.textContent = users.length;
+        totalAdmins.textContent = users.filter(u => u.role === 'admin').length;
+        totalVips.textContent = users.filter(u => u.role === 'vip').length;
+
+        if (shown.length === 0) {
+          usersTbody.innerHTML = '<tr><td colspan="6" class="px-3 py-4 text-center text-slate-500">No users found</td></tr>';
+          return;
+        }
+
+        usersTbody.innerHTML = shown.map(u => `
+          <tr class="border-t">
+            <td class="px-3 py-3">${escapeHtml(u.name || '')}</td>
+            <td class="px-3 py-3">${escapeHtml(u.email || '')}</td>
+            <td class="px-3 py-3">${escapeHtml(u.attending || '')}</td>
+            <td class="px-3 py-3">${u.guests ?? 0}</td>
+            <td class="px-3 py-3">${escapeHtml(u.role || 'guest')}</td>
+            <td class="px-3 py-3">
+              <button data-uid="${u.id}" data-role="admin" class="btn-promote mr-2 px-2 py-1 border rounded text-sm">Make Admin</button>
+              <button data-uid="${u.id}" data-role="vip" class="btn-promote mr-2 px-2 py-1 border rounded text-sm">Make VIP</button>
+              <button data-uid="${u.id}" data-role="guest" class="btn-promote px-2 py-1 border rounded text-sm">Revoke</button>
+            </td>
+          </tr>
+        `).join('');
+
+        // attach handlers
+        document.querySelectorAll('.btn-promote').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            const uid = btn.getAttribute('data-uid');
+            const role = btn.getAttribute('data-role');
+            btn.disabled = true;
+            try {
+              await setDoc(doc(db, 'users', uid), { role }, { merge: true });
+              await loadUsers();
+            } catch (err) {
+              console.error('change role failed', err);
+              alert('Failed to change role');
+            } finally { btn.disabled = false }
+          });
+        });
+      }
+
+      function escapeHtml(s){ return String(s).replace(/[&<>\"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+      document.getElementById('refreshBtn').addEventListener('click', loadUsers);
+      document.getElementById('exportBtn').addEventListener('click', async () => {
+        try {
+          const q = query(collection(db, 'users'), orderBy('createdAt', 'desc'));
+          const snap = await getDocs(q);
+          const rows = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+          const csv = [ ['id','name','email','attending','guests','role','createdAt'].join(',') ]
+            .concat(rows.map(r => [r.id, r.name||'', r.email||'', r.attending||'', r.guests||0, r.role||'guest', r.createdAt?.seconds||''].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')) ).join('\n');
+          const blob = new Blob([csv], { type: 'text/csv' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a'); a.href = url; a.download = 'users.csv'; a.click(); URL.revokeObjectURL(url);
+        } catch (err) { console.error('export failed', err); alert('Export failed'); }
+      });
+
+      document.getElementById('signOutBtn').addEventListener('click', async () => {
+        await signOut(auth);
+        window.location.href = '/login.html';
+      });
+
+      searchEl.addEventListener('input', () => loadUsers());
+
+      // initial load
+      loadUsers();
+    </script>
+  </body>
+</html>

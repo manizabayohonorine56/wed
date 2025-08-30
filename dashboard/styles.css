@@ -1,0 +1,18 @@
+:root{
+  --bg: #ffffff;
+  --muted: #64748b;
+  --primary: #8b5cf6;
+}
+*{box-sizing:border-box}
+body{font-family:Inter,system-ui,Segoe UI,Arial;background:var(--bg);color:#0f172a;margin:0}
+.container{max-width:1100px;margin:0 auto;padding:24px}
+.dash-header{background:linear-gradient(90deg,var(--primary),#f97316);color:white}
+.dash-header .container{display:flex;align-items:center;justify-content:space-between}
+.brand{font-family:'Playfair Display',serif;margin:0}
+.hero{padding:36px 0}
+.hero h2{margin:0;font-size:28px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px}
+.card{background:#fff;border:1px solid #eef2ff;padding:18px;border-radius:8px}
+.big{font-size:28px;font-weight:700;color:var(--primary)}
+.list{padding-left:18px}
+.foot{padding:24px;text-align:center;color:var(--muted)}
