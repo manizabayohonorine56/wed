@@ -100,23 +100,14 @@
   <footer class="text-center text-sm text-slate-600 py-8">© 2025 Ash & Sam</footer>
 
   <script type="module">
-    // Firebase modular SDK (v9+) - replace the firebaseConfig values with your project config
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+  import { auth, db, isConfigValid } from './firebase-init.js';
+  // Use the same Firebase SDK major version everywhere to avoid cross-version incompatibilities
+  import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+  import { createUserProfile } from './src/firestore-utils.js';
 
-    const firebaseConfig = {
-      apiKey: "REPLACE_ME",
-      authDomain: "REPLACE_ME",
-      projectId: "REPLACE_ME",
-      storageBucket: "REPLACE_ME",
-      messagingSenderId: "REPLACE_ME",
-      appId: "REPLACE_ME"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    if (!isConfigValid()) {
+      console.warn('Firebase config not set. Paste values into /public/firebase-config.js');
+    }
 
     document.getElementById('signupForm').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -148,16 +139,15 @@
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const uid = userCredential.user.uid;
 
-        // Store profile and role in Firestore under `users/{uid}`
-        await setDoc(doc(db, 'users', uid), {
-          name,
-          email,
-          phone,
-          attending,
-          guests,
-          role,
-          createdAt: serverTimestamp()
-        });
+  // Debug: ensure db and uid are defined before writing
+  console.log('signup: db', db);
+  console.log('signup: uid', uid);
+  if (!db) throw new Error('Firestore `db` is undefined. Check firebase-init.js and SDK versions.');
+  if (!uid) throw new Error('User UID is missing after createUserWithEmailAndPassword');
+
+  // Store profile and role in Firestore under `users/{uid}`
+  console.log('Calling createUserProfile with db:', db);
+  await createUserProfile({ uid, name, email, phone, attending, guests, role }, db);
 
         alert('Account created. You will be redirected to login.');
         window.location.href = '/login.html';

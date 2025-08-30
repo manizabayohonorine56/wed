@@ -69,23 +69,14 @@
   <footer class="text-center text-sm text-slate-600 py-8">© 2025 Ash & Sam</footer>
 
   <script type="module">
-    // Firebase modular SDK (v9+) - replace firebaseConfig with your project values
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+  import { auth, db, isConfigValid } from './firebase-init.js';
+  // Use the same Firebase SDK major version as firebase-init
+  import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+  import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "REPLACE_ME",
-      authDomain: "REPLACE_ME",
-      projectId: "REPLACE_ME",
-      storageBucket: "REPLACE_ME",
-      messagingSenderId: "REPLACE_ME",
-      appId: "REPLACE_ME"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    if (!isConfigValid()) {
+      console.warn('Firebase config not set. Paste values into /public/firebase-config.js');
+    }
 
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -95,10 +86,14 @@
 
       try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const uid = userCredential.user.uid;
+  const uid = userCredential.user.uid;
 
-        // Fetch role/profile from Firestore
-        const userDoc = await getDoc(doc(db, 'users', uid));
+  console.log('login: db', db);
+  console.log('login: uid', uid);
+  if (!db) throw new Error('Firestore `db` is undefined. Check firebase-init.js and SDK versions.');
+
+  // Fetch role/profile from Firestore
+  const userDoc = await getDoc(doc(db, 'users', uid));
         const profile = userDoc.exists() ? userDoc.data() : null;
         const role = profile?.role || 'guest';
 

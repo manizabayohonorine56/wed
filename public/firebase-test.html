@@ -5,10 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Firebase Test</title>
   <script type="module">
-    import { firebaseConfig } from './firebase-config.js';
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
-    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
-    import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
+  import { app, auth, db, analytics } from './firebase-init.js';
+  import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js';
+  import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js';
 
     const out = (msg) => {
       const el = document.getElementById('out');
@@ -16,13 +15,8 @@
     }
 
     try {
-      const app = initializeApp(firebaseConfig);
-      out('Firebase initialized');
-
-      const auth = getAuth(app);
-      const db = getFirestore(app);
-
-      out('Auth & Firestore clients created');
+      out('Firebase initialized (centralized)');
+      out('Auth & Firestore clients created (centralized)');
 
       // Try a lightweight Firestore read: look for a doc that probably doesn't exist — expecting either success or permission error
       (async () => {
