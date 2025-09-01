@@ -12,7 +12,12 @@
     <p>Only VIPs can see this.</p>
     <a href="/">Back home</a>
   </div>
+  <div style="position:absolute;top:16px;right:16px">
+    <button data-dark-toggle class="dark-toggle">Dark</button>
+  </div>
   <script type="module">
+    import { initDarkMode } from './src/dark-mode.js';
+    initDarkMode();
     import { requireRole } from './src/auth-guard.js';
     requireRole('vip', '/');
   </script>

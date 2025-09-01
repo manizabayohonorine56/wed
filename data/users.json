@@ -1,0 +1,10 @@
+[
+  {
+    "id": "u1",
+    "email": "couple@example.com",
+    "name": "Couple Account",
+    "role": "couple",
+    "status": "active",
+    "createdAt": 1756743034729
+  }
+]

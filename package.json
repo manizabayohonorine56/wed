@@ -16,6 +16,7 @@
     "vite": "^4.1.12"
   },
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "stripe": "^18.5.0"
   }
 }

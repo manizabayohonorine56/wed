@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Billing / Subscribe</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body class="container">
+    <main class="py-12">
+      <h1>Subscribe — Couple Plan</h1>
+      <p id="status">Checking auth...</p>
+      <div id="actions" class="mt-6">
+        <label for="priceId">Price ID (from Stripe)</label>
+        <input id="priceId" placeholder="price_1Hxxxx" />
+        <button id="checkoutBtn" class="btn mt-4">Start Checkout</button>
+      </div>
+
+    <script type="module" src="./src/billing.js"></script>
+  </body>
+</html>

@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Couple Dashboard</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body class="container">
+    <main class="py-12">
+      <h1>Couple Dashboard</h1>
+      <p id="status">Checking auth...</p>
+      <div id="editor" class="mt-6">
+        <input id="partnerA" placeholder="Partner A name" />
+        <input id="partnerB" placeholder="Partner B name" />
+        <input id="date" placeholder="YYYY-MM-DD" />
+        <textarea id="about" placeholder="Our story"></textarea>
+        <button id="saveBtn" class="btn">Save</button>
+      </div>
+    </main>
+    <script type="module" src="./src/couple.js"></script>
+  </body>
+</html>

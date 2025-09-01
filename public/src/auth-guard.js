@@ -15,9 +15,21 @@ export function requireRole(expectedRoles, fallback = '/') {
     try {
       const uid = user.uid;
       const snapshot = await getDoc(doc(db, 'users', uid));
-      const role = snapshot.exists() ? snapshot.data().role : 'guest';
+      const data = snapshot.exists() ? snapshot.data() : { role: 'guest' };
+      const role = data.role || 'guest';
+      // If subscription enforcement present, redirect
       if (!allowed.includes(role)) {
         window.location.href = fallback;
+        return;
+      }
+      // Enforce active subscription for couples
+      if (role === 'couple') {
+        const subscriptionStatus = data.subscriptionStatus || 'inactive';
+        if (subscriptionStatus !== 'active') {
+          // redirect to billing / pricing page to subscribe
+          window.location.href = '/pricing.html' || fallback;
+          return;
+        }
       }
       // else allow page to render
     } catch (err) {

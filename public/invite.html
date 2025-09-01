@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Manage Invitations</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body class="container">
+    <main class="py-12">
+      <h1>Invitation Manager</h1>
+      <p id="status">Checking auth...</p>
+      <div id="inviteForm" class="mt-6">
+        <input id="guestEmail" placeholder="guest@example.com">
+        <button id="createInvite" class="btn">Create Invite</button>
+      </div>
+      <div id="list" class="mt-6"></div>
+    </main>
+    <script type="module" src="./src/invite.js"></script>
+  </body>
+</html>

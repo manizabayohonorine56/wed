@@ -1,0 +1,10 @@
+[
+  {
+    "id": "s1",
+    "customerId": "cus_123",
+    "planId": "plan_monthly_1",
+    "status": "active",
+    "currentPeriodEnd": 1759335034740,
+    "priceMonthly": 9.99
+  }
+]

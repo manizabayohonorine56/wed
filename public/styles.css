@@ -1,13 +1,26 @@
-/* Small custom tweaks to pair with Tailwind */
+/* Small custom tweaks to pair with Tailwind + site-wide theme variables */
 :root{
   --rounded-lg: 14px;
+  /* Wedding palette */
+  --blush: #f8d7da;
+  --cream: #fff7ed;
+  --gold: #d4af37;
+  --pastel: #f3e8ff;
+  --muted: #64748b;
+  --bg: #ffffff;
+  --text: #0f172a;
+  --card: #ffffff;
+  --accent: #c084fc;
+  --glass: rgba(255,255,255,0.6);
+  --transition-fast: 200ms;
 }
+
 input, textarea, select {
   outline: none;
 }
 input:focus, textarea:focus, select:focus {
-  box-shadow: 0 0 0 4px rgba(139,92,246,0.08);
-  border-color: rgba(139,92,246,0.8);
+  box-shadow: 0 0 0 6px rgba(192,132,252,0.08);
+  border-color: rgba(192,132,252,0.8);
 }
 
 details summary {
@@ -25,3 +38,46 @@ details summary::after {
 
 .rounded-2xl { border-radius: 18px; }
 .shadow { box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06); }
+
+/* typography helpers */
+.font-heading { font-family: 'Playfair Display', serif; }
+
+body{font-family:Inter,system-ui,Segoe UI,Arial;background:var(--bg);color:var(--text);margin:0}
+
+.foot{padding:24px;text-align:center;color:var(--muted)}
+
+/* Dark mode variables */
+:root.dark {
+  --bg: #0b1020;
+  --text: #e6eef8;
+  --card: #0f172a;
+  --muted: #94a3b8;
+  --glass: rgba(15,23,42,0.5);
+}
+
+/* Small utility for cards */
+.card-soft { background: var(--card); border-radius: 12px; box-shadow: 0 6px 18px rgba(2,6,23,0.08); padding: 16px }
+
+/* Dark mode toggle */
+.dark-toggle { background: transparent; border: 1px solid rgba(0,0,0,0.06); padding: 6px 10px; border-radius: 8px }
+
+/* Tailwind utility overrides when using our dark mode flag */
+html.dark, :root.dark { color-scheme: dark; }
+html.dark body {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+html.dark .bg-white, html.dark .bg-slate-50 {
+  background: var(--card) !important;
+}
+html.dark .text-slate-600, html.dark .text-slate-700, html.dark .text-slate-500, html.dark .text-slate-800 {
+  color: var(--muted) !important;
+}
+html.dark .text-slate-900 { color: var(--text) !important; }
+html.dark .border-slate-200, html.dark .border-slate-300 { border-color: rgba(255,255,255,0.06) !important; }
+html.dark .shadow { box-shadow: 0 6px 18px rgba(2,6,23,0.6) !important; }
+
+/* Buttons: make outlined buttons lighter on dark */
+html.dark .bg-white.inline-flex, html.dark a.inline-flex.bg-white { background: var(--glass) !important; }
+
+

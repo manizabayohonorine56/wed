@@ -6,163 +6,110 @@
     <title>Super Admin — Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/styles/admin.css">
   </head>
-  <body class="bg-slate-50 text-slate-900">
-    <div class="max-w-7xl mx-auto p-6">
-      <header class="flex items-center justify-between mb-6">
-        <div>
-          <h1 class="text-3xl font-heading">Super Admin Dashboard</h1>
-          <p class="text-sm text-slate-600">Manage users, roles and site settings</p>
+  <body class="admin-ui bg-gray-900 text-slate-100">
+    <div class="min-h-screen flex">
+      <!-- SIDEBAR -->
+      <aside class="w-72 bg-gray-850 border-r border-gray-800 p-5 hidden md:block">
+        <div class="mb-6">
+          <div class="text-2xl font-semibold">Platform Admin</div>
+          <div class="text-sm text-slate-400">Super Admin</div>
         </div>
-        <div class="flex items-center gap-3">
-          <button id="refreshBtn" class="px-3 py-2 bg-primary text-white rounded">Refresh</button>
-          <button id="exportBtn" class="px-3 py-2 border rounded">Export CSV</button>
-          <button id="signOutBtn" class="px-3 py-2 border rounded">Sign out</button>
-        </div>
-      </header>
+        <nav class="space-y-1 text-sm">
+          <a class="nav-item block p-2 rounded hover:bg-gray-800" data-section="dashboard">Dashboard</a>
+          <a class="nav-item block p-2 rounded hover:bg-gray-800" data-section="weddings">Weddings</a>
+          <a class="nav-item block p-2 rounded hover:bg-gray-800" data-section="couples">Couples</a>
+          <a class="nav-item block p-2 rounded hover:bg-gray-800" data-section="guests">Guests</a>
+          <a class="nav-item block p-2 rounded hover:bg-gray-800" data-section="subscriptions">Subscriptions</a>
+          <a class="nav-item block p-2 rounded hover:bg-gray-800" data-section="analytics">Analytics</a>
+          <a class="nav-item block p-2 rounded hover:bg-gray-800" data-section="settings">Settings</a>
+          <a class="nav-item block p-2 rounded hover:bg-gray-800" data-section="help">Help</a>
+        </nav>
+      </aside>
 
-      <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div class="p-4 bg-white rounded shadow-sm">
-          <h3 class="text-sm text-slate-500">Total users</h3>
-          <p id="totalUsers" class="text-2xl font-semibold">—</p>
-        </div>
-        <div class="p-4 bg-white rounded shadow-sm">
-          <h3 class="text-sm text-slate-500">Admins</h3>
-          <p id="totalAdmins" class="text-2xl font-semibold">—</p>
-        </div>
-        <div class="p-4 bg-white rounded shadow-sm">
-          <h3 class="text-sm text-slate-500">VIPs</h3>
-          <p id="totalVips" class="text-2xl font-semibold">—</p>
-        </div>
-      </section>
+      <div class="flex-1 p-6">
+        <!-- TOPBAR -->
+        <header class="flex items-center justify-between mb-6">
+          <div class="flex items-center gap-4">
+            <button id="mobileMenuBtn" class="md:hidden p-2 bg-gray-800 rounded">☰</button>
+            <div>
+              <h1 class="text-2xl font-semibold">Dashboard</h1>
+              <p class="text-sm text-slate-400">Overview & analytics</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <input id="globalSearch" placeholder="Search users, weddings..." class="px-3 py-2 rounded bg-gray-800 text-slate-200 border border-gray-700" />
+            <button id="exportBtn" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 rounded">Export</button>
+            <button id="notifBtn" class="px-3 py-2 bg-gray-800 rounded">🔔</button>
+            <div class="relative">
+              <button id="profileBtn" class="px-3 py-2 bg-gray-800 rounded">Admin ▾</button>
+            </div>
+          </div>
+        </header>
 
-      <section class="bg-white p-4 rounded shadow-sm">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-medium">Users</h2>
-          <input id="search" placeholder="Search by name or email" class="border rounded px-3 py-2 w-64" />
-        </div>
+        <!-- OVERVIEW CARDS -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="card">
+            <div class="text-sm text-slate-400">Total Weddings</div>
+            <div id="cardWeddings" class="text-2xl font-bold">—</div>
+          </div>
+          <div class="card">
+            <div class="text-sm text-slate-400">Total Guests</div>
+            <div id="cardGuests" class="text-2xl font-bold">—</div>
+          </div>
+          <div class="card">
+            <div class="text-sm text-slate-400">Active Subscriptions</div>
+            <div id="cardSubs" class="text-2xl font-bold">—</div>
+          </div>
+          <div class="card">
+            <div class="text-sm text-slate-400">Top Countries</div>
+            <div id="cardCountries" class="text-lg">—</div>
+          </div>
+        </section>
 
-        <div class="overflow-x-auto">
-          <table class="w-full text-left table-auto">
-            <thead class="text-sm text-slate-500">
-              <tr>
-                <th class="px-3 py-2">Name</th>
-                <th class="px-3 py-2">Email</th>
-                <th class="px-3 py-2">Attending</th>
-                <th class="px-3 py-2">Guests</th>
-                <th class="px-3 py-2">Role</th>
-                <th class="px-3 py-2">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="usersTbody" class="text-sm"></tbody>
-          </table>
-        </div>
-      </section>
+        <!-- CHARTS & WIDGETS -->
+        <section class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div class="lg:col-span-2 p-4 bg-gray-850 rounded-lg shadow-soft">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-semibold">RSVP Statistics</h3>
+              <div class="text-sm text-slate-400">Last 30 days</div>
+            </div>
+            <canvas id="rsvpChartCanvas" class="w-full h-64 bg-transparent"></canvas>
+          </div>
+
+          <div class="p-4 bg-gray-850 rounded-lg shadow-soft">
+            <h3 class="font-semibold mb-2">Storage Usage</h3>
+            <div id="storageWidget">—</div>
+            <h3 class="font-semibold mt-4 mb-2">Upcoming Weddings</h3>
+            <ul id="upcomingList" class="text-sm text-slate-300 space-y-2"></ul>
+          </div>
+
+          <div class="lg:col-span-2 p-4 bg-gray-850 rounded-lg shadow-soft">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-semibold">Billing & Revenue</h3>
+            </div>
+            <canvas id="revenueChartCanvas" class="w-full h-48 bg-transparent"></canvas>
+          </div>
+
+          <div class="p-4 bg-gray-850 rounded-lg shadow-soft">
+            <h3 class="font-semibold mb-2">Audience</h3>
+            <canvas id="audienceCanvas" class="w-full h-48 bg-transparent"></canvas>
+          </div>
+
+          <div class="p-4 bg-gray-850 rounded-lg shadow-soft">
+            <h3 class="font-semibold mb-2">Support Tickets</h3>
+            <ul id="ticketsList" class="text-sm text-slate-300 space-y-2"></ul>
+          </div>
+        </section>
+
+      </div>
     </div>
 
-    <script type="module">
-      import { requireRole } from './src/auth-guard.js';
-      import { auth, db } from './firebase-init.js';
-      import { signOut } from 'https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js';
-      import { collection, getDocs, query, orderBy, where, doc, setDoc } from 'https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js';
-
-      requireRole('superadmin', '/');
-
-      const usersTbody = document.getElementById('usersTbody');
-      const totalUsers = document.getElementById('totalUsers');
-      const totalAdmins = document.getElementById('totalAdmins');
-      const totalVips = document.getElementById('totalVips');
-      const searchEl = document.getElementById('search');
-
-      async function loadUsers() {
-        usersTbody.innerHTML = '<tr><td colspan="6" class="px-3 py-4 text-center text-slate-500">Loading...</td></tr>';
-        try {
-          const q = query(collection(db, 'users'), orderBy('createdAt', 'desc'));
-          const snap = await getDocs(q);
-          const users = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-          renderUsers(users);
-        } catch (err) {
-          console.error('loadUsers error', err);
-          usersTbody.innerHTML = '<tr><td colspan="6" class="px-3 py-4 text-center text-red-500">Failed to load users</td></tr>';
-        }
-      }
-
-      function renderUsers(users) {
-        const filter = (searchEl.value || '').toLowerCase();
-        const shown = users.filter(u => {
-          if (!filter) return true;
-          return (u.name || '').toLowerCase().includes(filter) || (u.email || '').toLowerCase().includes(filter);
-        });
-
-        totalUsers.textContent = users.length;
-        totalAdmins.textContent = users.filter(u => u.role === 'admin').length;
-        totalVips.textContent = users.filter(u => u.role === 'vip').length;
-
-        if (shown.length === 0) {
-          usersTbody.innerHTML = '<tr><td colspan="6" class="px-3 py-4 text-center text-slate-500">No users found</td></tr>';
-          return;
-        }
-
-        usersTbody.innerHTML = shown.map(u => `
-          <tr class="border-t">
-            <td class="px-3 py-3">${escapeHtml(u.name || '')}</td>
-            <td class="px-3 py-3">${escapeHtml(u.email || '')}</td>
-            <td class="px-3 py-3">${escapeHtml(u.attending || '')}</td>
-            <td class="px-3 py-3">${u.guests ?? 0}</td>
-            <td class="px-3 py-3">${escapeHtml(u.role || 'guest')}</td>
-            <td class="px-3 py-3">
-              <button data-uid="${u.id}" data-role="admin" class="btn-promote mr-2 px-2 py-1 border rounded text-sm">Make Admin</button>
-              <button data-uid="${u.id}" data-role="vip" class="btn-promote mr-2 px-2 py-1 border rounded text-sm">Make VIP</button>
-              <button data-uid="${u.id}" data-role="guest" class="btn-promote px-2 py-1 border rounded text-sm">Revoke</button>
-            </td>
-          </tr>
-        `).join('');
-
-        // attach handlers
-        document.querySelectorAll('.btn-promote').forEach(btn => {
-          btn.addEventListener('click', async (e) => {
-            const uid = btn.getAttribute('data-uid');
-            const role = btn.getAttribute('data-role');
-            btn.disabled = true;
-            try {
-              await setDoc(doc(db, 'users', uid), { role }, { merge: true });
-              await loadUsers();
-            } catch (err) {
-              console.error('change role failed', err);
-              alert('Failed to change role');
-            } finally { btn.disabled = false }
-          });
-        });
-      }
-
-      function escapeHtml(s){ return String(s).replace(/[&<>\"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
-
-      document.getElementById('refreshBtn').addEventListener('click', loadUsers);
-      document.getElementById('exportBtn').addEventListener('click', async () => {
-        try {
-          const q = query(collection(db, 'users'), orderBy('createdAt', 'desc'));
-          const snap = await getDocs(q);
-          const rows = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-          const csv = [ ['id','name','email','attending','guests','role','createdAt'].join(',') ]
-            .concat(rows.map(r => [r.id, r.name||'', r.email||'', r.attending||'', r.guests||0, r.role||'guest', r.createdAt?.seconds||''].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')) ).join('\n');
-          const blob = new Blob([csv], { type: 'text/csv' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a'); a.href = url; a.download = 'users.csv'; a.click(); URL.revokeObjectURL(url);
-        } catch (err) { console.error('export failed', err); alert('Export failed'); }
-      });
-
-      document.getElementById('signOutBtn').addEventListener('click', async () => {
-        await signOut(auth);
-        window.location.href = '/login.html';
-      });
-
-      searchEl.addEventListener('input', () => loadUsers());
-
-      // initial load
-      loadUsers();
-    </script>
+    <script type="module" src="/src/superadmin.js"></script>
   </body>
 </html>

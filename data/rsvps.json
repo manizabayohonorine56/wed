@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "id": 1756734584965,
+    "email": "test@example.com",
+    "name": "Automated Test"
+  },
+  {
+    "id": 1756734640737,
+    "email": "test@example.com",
+    "name": "Automated Test"
+  }
+]
