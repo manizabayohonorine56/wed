@@ -43,6 +43,13 @@ router.post('/create-checkout-session', async (req, res) => {
       console.error('customer creation lookup error', err);
     }
 
+    // Log paymentMethod if provided in metadata for auditing in dev
+    try {
+      if (metadata && metadata.paymentMethod) {
+        console.log('Checkout requested with paymentMethod=', metadata.paymentMethod);
+      }
+    } catch (e) { /* ignore */ }
+
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       payment_method_types: ['card'],

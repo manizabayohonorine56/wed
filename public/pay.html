@@ -1,0 +1,287 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Pay — Mock Checkout</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+      :root{--bg:#0b1020;--card:#0f1724;--muted:#94a3b8;--accent:#2563eb;--accent-2:#7c3aed;--surface:#0b1220}
+      body{background:var(--bg);color:#e6eef8;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial}
+      .wrap{max-width:980px;margin:36px auto;padding:20px}
+      .checkout{display:flex;gap:20px}
+      .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);border:1px solid rgba(255,255,255,0.04);padding:20px;border-radius:12px;flex:1}
+      .summary{width:340px;flex:0 0 340px}
+      .tabs{display:flex;background:rgba(255,255,255,0.02);border-radius:8px;padding:6px;gap:6px}
+      .tab{flex:1;padding:10px;border-radius:6px;text-align:center;cursor:pointer;color:var(--muted)}
+      .tab.active{background:linear-gradient(90deg,var(--card),rgba(255,255,255,0.02));color:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.6)}
+      label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
+  .field{background:#081223;border:1px solid rgba(255,255,255,0.03);padding:10px;border-radius:8px;color:#e6eef8}
+  /* Custom select styles */
+  select{appearance:none;-webkit-appearance:none;-moz-appearance:none;border:none;background:transparent;color:inherit;padding-right:28px;font-size:14px}
+  .select-wrap{position:relative}
+  .select-wrap::after{content:'';position:absolute;right:10px;top:50%;transform:translateY(-50%);width:10px;height:10px;border-right:2px solid rgba(255,255,255,0.6);border-bottom:2px solid rgba(255,255,255,0.6);transform:translateY(-50%) rotate(45deg)}
+  .field:focus-within{box-shadow:0 0 0 3px rgba(124,58,237,0.12);border-color:rgba(124,58,237,0.6)}
+  .flag-dot{width:14px;height:10px;border-radius:2px;display:inline-block;margin-right:8px;vertical-align:middle}
+  .country-row{display:flex;align-items:center;gap:8px}
+      .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+      .pay-btn{display:block;width:100%;padding:14px;border-radius:10px;background:linear-gradient(90deg,var(--accent),#1d4ed8);color:white;font-weight:600;border:none;cursor:pointer}
+      .small{font-size:13px;color:var(--muted)}
+      .logo-box{width:44px;height:28px;border-radius:6px;display:inline-block;vertical-align:middle;margin-right:8px}
+      .pm-visa{background:linear-gradient(90deg,#1e3a8a,#60a5fa)}
+      .pm-paypal{background:linear-gradient(90deg,#1f2937,#0ea5a4)}
+      .right-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:18px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)}
+      .total-row{display:flex;justify-content:space-between;align-items:center;margin-top:16px;font-weight:600}
+      input[type="text"], input[type="email"]{width:100%;background:transparent;border:none;color:inherit}
+      .muted-muted{color:var(--muted)}
+      .card-title{font-size:18px;margin-bottom:8px}
+      .field-row{margin-bottom:12px}
+      .note{font-size:13px;color:var(--muted);margin-top:8px}
+      .pay-btn:active{transform:translateY(1px)}
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <h2 style="margin:0">Secure payment</h2>
+        <div class="small muted-muted">Powered by Mock</div>
+      </div>
+
+      <div class="checkout">
+        <div class="panel">
+          <div class="tabs" role="tablist" aria-label="Payment methods">
+            <div id="tab-card" class="tab active" role="tab" tabindex="0">Pay by Card</div>
+            <div id="tab-paypal" class="tab" role="tab" tabindex="0">Pay with PayPal</div>
+          </div>
+
+          <div style="margin-top:14px">
+            <div class="card-title">Payment details</div>
+
+            <div class="field-row">
+              <label for="email">Email address</label>
+              <div class="field"><input id="email" type="email" placeholder="you@example.com" aria-label="Email address"></div>
+            </div>
+
+            <div id="cardForm">
+              <div class="field-row">
+                <label for="cardNumber">Card number</label>
+                <div class="field"><input id="cardNumber" type="text" inputmode="numeric" placeholder="1234 1234 1234 1234" aria-label="Card number"></div>
+              </div>
+
+              <div class="grid">
+                <div>
+                  <label for="exp">Expiration date</label>
+                  <div class="field"><input id="exp" type="text" placeholder="MM / YY" aria-label="Expiration date"></div>
+                </div>
+                <div>
+                  <label for="cvc">Security code</label>
+                  <div class="field"><input id="cvc" type="text" inputmode="numeric" placeholder="CVC" aria-label="Security code"></div>
+                </div>
+              </div>
+
+              <div class="field-row">
+                <label for="name">Cardholder name</label>
+                <div class="field"><input id="name" type="text" placeholder="Full name" aria-label="Cardholder name"></div>
+              </div>
+
+                <div class="grid">
+                  <div>
+                    <label for="country">Country</label>
+                    <div class="field select-wrap country-row">
+                      <span id="flagDot" class="flag-dot" aria-hidden="true" style="background:#fff2"></span>
+                      <select id="country" aria-label="Country"></select>
+                    </div>
+                  </div>
+                  <div>
+                    <label for="city">City</label>
+                    <div class="field select-wrap">
+                      <select id="city" aria-label="City"></select>
+                      <input id="cityInput" type="text" placeholder="City" aria-label="City (type)" style="display:none;margin-top:6px;width:100%"/>
+                    </div>
+                  </div>
+                </div>
+
+              <div class="field-row">
+                <label for="tax">Tax ID (optional)</label>
+                <div class="field"><input id="tax" type="text" placeholder="Tax ID" aria-label="Tax ID"></div>
+              </div>
+            </div>
+
+            <div id="paypalInfo" style="display:none;margin-top:12px">
+              <div class="small">You'll be redirected to PayPal to complete the payment.</div>
+            </div>
+
+            <div class="note">All transactions on this page are mocked for development. No real card is charged.</div>
+          </div>
+        </div>
+
+        <div class="summary">
+          <div class="right-card">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div>
+                <div class="small">Order</div>
+                <div style="font-weight:700;margin-top:6px" id="planLabel">Plan</div>
+              </div>
+              <div style="text-align:right">
+                <div class="small muted-muted">Subtotal</div>
+                <div id="subtotal" style="font-weight:700;margin-top:6px">$0.00</div>
+              </div>
+            </div>
+
+            <div class="total-row">
+              <div class="small muted-muted">Total</div>
+              <div id="total" style="font-size:20px">$0.00</div>
+            </div>
+
+            <div style="margin-top:18px">
+              <button id="payNow" class="pay-btn" aria-label="Pay now">Pay</button>
+            </div>
+
+            <div style="margin-top:10px" class="small muted-muted">Secure payment link · Terms · Privacy</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const params = new URLSearchParams(location.search);
+      const plan = params.get('plan') || 'Premium';
+      const method = params.get('method') || params.get('paymentMethod') || 'card';
+      const amountParam = params.get('amount');
+      let amount = amountParam ? parseFloat(amountParam) : 609.98;
+      const planParam = params.get('plan') || plan;
+
+      // Countries and example cities mapping (small curated list; falls back to free-text)
+      const countries = [
+        { code: 'US', name: 'United States' },{ code: 'CA', name: 'Canada' },{ code: 'GB', name: 'United Kingdom' },
+        { code: 'AU', name: 'Australia' },{ code: 'DE', name: 'Germany' },{ code: 'FR', name: 'France' },
+        { code: 'IN', name: 'India' },{ code: 'JP', name: 'Japan' },{ code: 'CN', name: 'China' },{ code: 'BR', name: 'Brazil' },
+        { code: 'NG', name: 'Nigeria' },{ code: 'KE', name: 'Kenya' },{ code: 'ZA', name: 'South Africa' },{ code: 'MX', name: 'Mexico' },
+        { code: 'ES', name: 'Spain' },{ code: 'IT', name: 'Italy' },{ code: 'NL', name: 'Netherlands' },{ code: 'SE', name: 'Sweden' },
+        { code: 'CH', name: 'Switzerland' },{ code: 'SG', name: 'Singapore' }
+      ];
+
+      const cityMap = {
+        'United States': ['Los Angeles','New York','San Francisco','Chicago','Austin'],
+        'Canada': ['Toronto','Vancouver','Montreal','Calgary'],
+        'United Kingdom': ['London','Manchester','Birmingham'],
+        'Australia': ['Sydney','Melbourne','Brisbane'],
+        'Germany': ['Berlin','Munich','Hamburg'],
+        'France': ['Paris','Lyon','Marseille'],
+        'India': ['Mumbai','Bengaluru','Delhi'],
+        'Japan': ['Tokyo','Osaka','Kyoto'],
+        'China': ['Shanghai','Beijing','Shenzhen'],
+        'Brazil': ['Sao Paulo','Rio de Janeiro'],
+        'Nigeria': ['Lagos','Abuja'],
+        'Kenya': ['Nairobi','Mombasa'],
+        'South Africa': ['Johannesburg','Cape Town'],
+        'Mexico': ['Mexico City','Guadalajara'],
+        'Spain': ['Madrid','Barcelona']
+      };
+
+      const countryEl = document.getElementById('country');
+      const cityEl = document.getElementById('city');
+      const cityInput = document.getElementById('cityInput');
+
+      function populateCountries(){
+        countryEl.innerHTML = countries.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+      }
+
+      function populateCities(country){
+        const list = cityMap[country];
+        if (list && list.length){
+          cityEl.style.display = 'block'; cityInput.style.display = 'none';
+          cityEl.innerHTML = list.map(ci => `<option value="${ci}">${ci}</option>`).join('');
+        } else {
+          cityEl.style.display = 'none'; cityInput.style.display = 'block';
+          cityInput.value = '';
+        }
+      }
+
+      populateCountries();
+      // default to first country
+      populateCities(countryEl.value);
+      countryEl.addEventListener('change', (e)=> { populateCities(e.target.value); updateFlag(e.target.value); });
+
+      // small flag color hints for a few countries
+      const flagMap = { 'United States':'#3b82f6', 'Canada':'#ef4444', 'United Kingdom':'#111827', 'Australia':'#06b6d4', 'Germany':'#f97316', 'France':'#3b82f6', 'India':'#f59e0b', 'Japan':'#ef4444' };
+      function updateFlag(countryName){
+        const dot = document.getElementById('flagDot');
+        const c = flagMap[countryName] || '#94a3b8';
+        if (dot) dot.style.background = c;
+      }
+      // init flag
+      updateFlag(countryEl.value);
+
+      // keyboard focus visual for select-wrap
+      document.querySelectorAll('.select-wrap select').forEach(s => {
+        s.addEventListener('focus', () => s.closest('.select-wrap').classList.add('focused'));
+        s.addEventListener('blur', () => s.closest('.select-wrap').classList.remove('focused'));
+      });
+
+      // Try to fetch the landing page and extract price for the requested plan to match landing page
+      (async function syncPriceFromLanding(){
+        try {
+          const html = await fetch('/index.html').then(r => r.text());
+          const doc = new DOMParser().parseFromString(html, 'text/html');
+          const grid = doc.querySelector('#billing .grid');
+          if (grid){
+            const cards = grid.querySelectorAll(':scope > div');
+            cards.forEach(card => {
+              const nameEl = card.querySelector('.text-sm.uppercase');
+              const priceEl = card.querySelector('.price');
+              if (!nameEl || !priceEl) return;
+              const name = nameEl.textContent.trim().toLowerCase();
+              const planKey = planParam.toLowerCase();
+              if (name.includes(planKey) || planKey.includes(name)){
+                // prefer monthly as displayed on landing page toggle default
+                const val = priceEl.getAttribute('data-monthly') || priceEl.textContent.replace(/[^0-9.]/g,'');
+                const parsed = parseFloat(val);
+                if (!isNaN(parsed)){
+                  amount = parsed;
+                  document.getElementById('subtotal').textContent = '$' + amount.toFixed(2);
+                  document.getElementById('total').textContent = '$' + amount.toFixed(2);
+                  document.getElementById('payNow').textContent = 'Pay $' + amount.toFixed(2);
+                }
+              }
+            });
+          }
+        } catch (err){
+          console.warn('Unable to sync price from landing page', err);
+        }
+      })();
+
+      document.getElementById('planLabel').textContent = plan;
+      document.getElementById('subtotal').textContent = '$' + amount.toFixed(2);
+      document.getElementById('total').textContent = '$' + amount.toFixed(2);
+      document.getElementById('payNow').textContent = 'Pay $' + amount.toFixed(2);
+
+      // initialize method UI
+      function setMethodUI(m){
+        const isPaypal = m === 'paypal';
+        document.getElementById('cardForm').style.display = isPaypal ? 'none' : 'block';
+        document.getElementById('paypalInfo').style.display = isPaypal ? 'block' : 'none';
+        document.getElementById('tab-card').classList.toggle('active', !isPaypal);
+        document.getElementById('tab-paypal').classList.toggle('active', isPaypal);
+      }
+      setMethodUI(method);
+
+      document.getElementById('tab-card').addEventListener('click', ()=> setMethodUI('card'));
+      document.getElementById('tab-paypal').addEventListener('click', ()=> setMethodUI('paypal'));
+
+      document.getElementById('payNow').addEventListener('click', ()=>{
+        // simulate processing
+        const selectedMethod = document.getElementById('tab-paypal').classList.contains('active') ? 'paypal' : 'card';
+        document.getElementById('payNow').textContent = 'Processing...';
+        setTimeout(()=>{
+          localStorage.setItem('paid_plan', plan);
+          const country = countryEl.value || '';
+          const city = (cityEl.style.display !== 'none' ? cityEl.value : cityInput.value) || '';
+          // redirect to paid page and include method and location for visibility
+          const qs = new URLSearchParams({ plan, method: selectedMethod, amount: String(amount), country, city });
+          location.href = '/paid.html?' + qs.toString();
+        }, 900);
+      });
+    </script>
+  </body>
+</html>

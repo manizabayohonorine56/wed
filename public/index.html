@@ -111,24 +111,63 @@
     </div>
   </section>
 
-  <!-- SCHEDULE -->
-  <section id="schedule" class="bg-slate-50 py-16">
-  <div data-reveal class="max-w-4xl mx-auto px-6">
-      <h3 class="text-2xl font-heading font-bold">Day & Schedule</h3>
-      <div class="mt-6 grid md:grid-cols-3 gap-6">
-        <div class="p-6 bg-white rounded-lg shadow">
-          <div class="text-sm font-semibold text-primary">Ceremony</div>
-          <div class="mt-2 text-slate-700">3:00 PM — Rosewood Gardens</div>
-        </div>
-        <div class="p-6 bg-white rounded-lg shadow">
-          <div class="text-sm font-semibold text-primary">Cocktail Hour</div>
-          <div class="mt-2 text-slate-700">4:00 PM — Garden Terrace</div>
-        </div>
-        <div class="p-6 bg-white rounded-lg shadow">
-          <div class="text-sm font-semibold text-primary">Reception</div>
-          <div class="mt-2 text-slate-700">5:00 PM — Rosewood Ballroom</div>
+  <!-- BILLING (replaces Schedule) -->
+  <section id="billing" class="py-24 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-8">
+        <h3 class="text-3xl font-heading font-bold">Plans for every celebration</h3>
+        <p class="mt-2 text-slate-300">Flexible billing options — switch between monthly and annual pricing.</p>
+      </div>
+
+      <div class="flex items-center justify-center mb-8">
+        <div id="billingToggle" class="inline-flex bg-slate-800 rounded-full p-1">
+          <button id="billingMonthly" class="px-4 py-2 rounded-full text-sm bg-transparent text-slate-300">Monthly</button>
+          <button id="billingAnnual" class="px-4 py-2 rounded-full text-sm bg-transparent text-slate-300">Annually</button>
         </div>
       </div>
+
+      <div class="grid md:grid-cols-3 gap-6 items-end">
+        <!-- Left card -->
+        <div class="p-6 rounded-2xl bg-gradient-to-b from-slate-800 to-slate-900 border border-slate-700 text-center">
+          <div class="text-sm uppercase text-slate-400">Personal</div>
+          <div class="mt-4 text-3xl font-bold"><span class="price" data-monthly="0" data-annual="0">Free</span></div>
+          <div class="mt-4 text-slate-400">For individuals who want to securely connect personal devices.</div>
+          <ul class="mt-6 text-sm text-slate-400 space-y-2">
+            <li>1 device</li>
+          </ul>
+          <a href="/billing.html?plan=personal" class="mt-6 inline-block w-full py-3 rounded-xl bg-slate-700 text-white text-center">Try Now</a>
+        </div>
+
+        <!-- Center (highlight) -->
+        <div class="relative p-6 rounded-3xl bg-gradient-to-b from-slate-700 to-slate-800 transform scale-105 shadow-xl ring-1 ring-indigo-500">
+          <div class="absolute -top-6 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-500 to-purple-500 text-xs px-3 py-1 rounded-full">Best Deal</div>
+          <div class="text-center mt-4">
+            <div class="text-sm uppercase text-indigo-200">Starter</div>
+            <div class="mt-4 text-4xl font-extrabold"><span class="price" data-monthly="2.99" data-annual="29.99">$2.99</span><span class="text-base font-medium text-slate-300"> / <span class="period">month</span></span></div>
+            <div class="mt-2 text-sm text-indigo-100">+3 EXTRA months when billed annually</div>
+            <ul class="mt-6 text-sm text-indigo-100 space-y-2">
+              <li>Cover 5 devices</li>
+              <li>Private wedding site</li>
+              <li>Advanced RSVP tools</li>
+            </ul>
+            <a href="/billing.html?plan=starter" class="mt-6 inline-block w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-center">Subscribe Now</a>
+          </div>
+        </div>
+
+        <!-- Right card -->
+        <div class="p-6 rounded-2xl bg-gradient-to-b from-slate-800 to-slate-900 border border-slate-700 text-center">
+          <div class="text-sm uppercase text-slate-400">Premium</div>
+          <div class="mt-4 text-3xl font-bold"><span class="price" data-monthly="6.99" data-annual="69.99">$6.99</span><span class="text-base font-medium text-slate-300"> / <span class="period">month</span></span></div>
+          <div class="mt-4 text-slate-400">For companies who need service and resource level control.</div>
+          <ul class="mt-6 text-sm text-slate-400 space-y-2">
+            <li>Covers 10 devices</li>
+            <li>Priority support</li>
+          </ul>
+          <a href="/billing.html?plan=premium" class="mt-6 inline-block w-full py-3 rounded-xl bg-slate-700 text-white text-center">Subscribe Now</a>
+        </div>
+      </div>
+
+      <div class="mt-10 text-center text-sm text-slate-400">30-day money-back guarantee • Secure checkout via Stripe</div>
     </div>
   </section>
 

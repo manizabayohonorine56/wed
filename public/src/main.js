@@ -142,3 +142,26 @@ if (adminUsers) {
   });
 }
 
+// Billing toggle behavior (dark billing section)
+function setBillingMode(mode) {
+  document.querySelectorAll('#billing .price').forEach(el => {
+    const m = el.getAttribute('data-monthly');
+    const a = el.getAttribute('data-annual');
+    let txt = '';
+    if (mode === 'annual') txt = a === '0' ? 'Free' : `$${a}`;
+    else txt = m === '0' ? 'Free' : `$${m}`;
+    el.textContent = txt;
+  });
+  document.querySelectorAll('#billing .period').forEach(el => el.textContent = mode === 'annual' ? 'year' : 'month');
+}
+
+const bm = document.getElementById('billingMonthly');
+const ba = document.getElementById('billingAnnual');
+if (bm && ba) {
+  bm.addEventListener('click', () => { setBillingMode('monthly'); bm.classList.add('bg-slate-700'); ba.classList.remove('bg-slate-700'); });
+  ba.addEventListener('click', () => { setBillingMode('annual'); ba.classList.add('bg-slate-700'); bm.classList.remove('bg-slate-700'); });
+  // initialize
+  setBillingMode('monthly');
+  bm.classList.add('bg-slate-700');
+}
+

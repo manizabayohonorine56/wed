@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Thank you — Access Granted</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body class="container py-12">
+    <main>
+      <h1>Thank you — Payment Successful</h1>
+      <p id="msg" class="mt-4">Access will be granted shortly.</p>
+      <div class="mt-6">
+        <a id="goToPortal" href="/" class="btn">Go to your dashboard</a>
+      </div>
+    </main>
+    <script>
+      const params = new URLSearchParams(location.search);
+      const plan = params.get('plan');
+      if (plan) document.getElementById('msg').textContent = `You purchased: ${plan}. Redirecting to your private page...`;
+      // In a real app you'd exchange the session and provision access server-side.
+      setTimeout(() => {
+        // For demo, redirect to a distinct page per plan
+        if (plan === 'starter') location.href = '/vip.html';
+        else if (plan === 'premium') location.href = '/superadmin.html';
+        else location.href = '/';
+      }, 1200);
+    </script>
+  </body>
+</html>

@@ -107,7 +107,14 @@
   const role = profile?.role || 'guest';
 
         alert(`Logged in as ${email} — role: ${role}`);
-        // Redirect based on role (example)
+        // If a returnUrl query param was passed, redirect there first
+  const params = new URLSearchParams(window.location.search);
+  const returnUrl = params.get('returnUrl');
+  if (returnUrl) {
+    window.location.href = returnUrl;
+    return;
+  }
+  // Redirect based on role (example)
   if (role === 'superadmin') window.location.href = '/superadmin.html';
   else if (role === 'admin') window.location.href = '/admin.html';
   else if (role === 'vip') window.location.href = '/vip.html';
